@@ -1,7 +1,12 @@
 import copy
 from copy import deepcopy
 
+import copy
+import math
+from copy import deepcopy
 
+
+# below function need L(list of tuple with (item,count)), MIS(dict{(item:MIS)}), n, sdc
 def level_2(L, MIS, n, sdc):
     C2 = []
     for i in range(0, len(L)):
@@ -19,7 +24,7 @@ def level_2(L, MIS, n, sdc):
     return C2
 
 
-def ms_gsp_candidate_gen(F, M, CountMap, SDC, MIS):
+def MScandidateGen(F, M, CountMap, SDC, MIS):
     # F[2] = [[[20, 30]], [[20], [30]], [[20, 70]], [[20], [70]], [[20], [80]], [[30], [30]], [[30, 70]], [[30], [70]], [[30, 80]], [[30], [80]], [[70], [70]], [[70, 80]], [[80], [70]], [[10, 40]], [[10], [40]], [[40], [40]]]
     # F[2] = [[[20, 30, 40]], [[40], [70]]]
     # print(F)
@@ -208,3 +213,4 @@ def LastElement(s):
 def FirstElement(s):
     first = s[0]
     return first
+
