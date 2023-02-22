@@ -1,9 +1,6 @@
-import copy
-import operator
-from collections import OrderedDict
 import math
-from ReadInputs import read_input
-from candidate_generation import level_2, ms_gsp_candidate_gen
+from read_inputs import read_seq_file, read_param_file
+from candidate_generation import level_2, MScandidateGen
 
 
 def MinMIS(Ck, MIS):
@@ -106,7 +103,7 @@ def ms_gsp(S, MIS, SDC):
         if (support >= MIS[L[i][0]]):
             F1.append(L[i][0])
 
-    output_file = open("Output_MS-GSP.txt", "w")
+    output_file = open("Output_MS-GSP_ORG.txt", "w")
     output_file.write("The number of length 1 sequential pattern is " + str(len(F1)) + "\n")
     for f in F1:
         print_s = "Pattern : <{" + str(f) + "}"
@@ -123,7 +120,7 @@ def ms_gsp(S, MIS, SDC):
         if k == 2:
             Ck = level_2(L, MIS, seqCount, SDC)
         else:
-            Ck = ms_gsp_candidate_gen(Fk, M, CountMap, SDC, MIS)
+            Ck = MScandidateGen(Fk, M, CountMap, SDC, MIS)
 
         # print("C", Ck)
         # print("Length of C", len(Ck))
@@ -169,5 +166,6 @@ def ms_gsp(S, MIS, SDC):
 
 
 if __name__ == '__main__':
-    S, MIS, SDC = read_input()
-    ms_gsp(S, MIS, SDC)
+    seq_list = read_seq_file()
+    min_seq_dict, sdc_val = read_param_file()
+    ms_gsp(seq_list, min_seq_dict, sdc_val)
