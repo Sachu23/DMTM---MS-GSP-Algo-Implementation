@@ -34,7 +34,7 @@ def Sub(Ck, s):
                 if Subset(i, s[j]):
                     m[j] = True
                     isThere = True
-                    counter = j+1
+                    counter = j + 1
                     break
             j += 1
         if not isThere:
@@ -50,11 +50,11 @@ def remove_duplicates(d):
     return final
 
 
-def init_pass(M,CountMap,seqCount,MIS,LMap):
+def init_pass(M, CountMap, seq_count, MIS, LMap):
     counter = 0
     for i in M:
-        support = float(CountMap[i])/float(seqCount)
-        if(support < MIS[i]):
+        support = float(CountMap[i]) / float(seq_count)
+        if (support < MIS[i]):
             counter = counter + 1
         else:
             break
@@ -62,45 +62,41 @@ def init_pass(M,CountMap,seqCount,MIS,LMap):
     checkMIS = MIS[M[counter]]
     LMap[M[counter]] = CountMap[M[counter]]
 
-    for i in M[counter+1:]:
-        support = float(CountMap[i])/float(seqCount)
-        if(support>=checkMIS):
+    for i in M[counter + 1:]:
+        support = float(CountMap[i]) / float(seq_count)
+        if (support >= checkMIS):
             LMap[i] = CountMap[i]
 
-    add_to_L = [[k,v] for k, v in LMap.items()]
+    add_to_L = [[k, v] for k, v in LMap.items()]
     return add_to_L
 
 
 def ms_gsp(S, MIS, SDC):
-    M = []
-    L = []
-    CountMap = {}
-    LMap = {}
-    F1 = []
-    F = []
-    seqCount = len(S)
+    M = list()  # Sorted MIS values
+    M = [x for x in sorted(MIS, key=MIS.get)]
 
-    for i in sorted(MIS, key=MIS.get, reverse=False):
-        M.append(i)
-
+    count_map = dict()
     for i in M:
         count = 0
         for row in S:
-            for elem in row:
-                if (elem.count(i)):
-                    count = count + 1
-                    CountMap[i] = count
-                    break
+            if any(i in elem for elem in row):
+                count += 1
+        if count:
+            count_map[i] = count
 
-    for i in M:
-        if i not in CountMap:
-            M.remove(i)
+    new_M = [i for i in M if i in count_map]
+    M.clear()
+    M.extend(new_M)
 
-    L = init_pass(M, CountMap, seqCount, MIS, LMap)
+    seq_count = len(S)
+    LMap = dict()
 
+    L = init_pass(M, count_map, seq_count, MIS, LMap)
+
+    F1 = list()
     for i in range(len(L)):
-        support = float(L[i][1]) / seqCount
-        if (support >= MIS[L[i][0]]):
+        support = float(L[i][1]) / seq_count
+        if support >= MIS[L[i][0]]:
             F1.append(L[i][0])
 
     output_file = open("Output_MS-GSP_ORG.txt", "w")
@@ -108,19 +104,16 @@ def ms_gsp(S, MIS, SDC):
     for f in F1:
         print_s = "Pattern : <{" + str(f) + "}"
         print_s += ">"
-        print_s += ": Count = " + str(CountMap[f])
+        print_s += ": Count = " + str(count_map[f])
         output_file.write(print_s + "\n")
 
     k = 2
-
-    Ck = []
-
     while (True):
         # print("K", k)
         if k == 2:
-            Ck = level_2(L, MIS, seqCount, SDC)
+            Ck = level_2(L, MIS, seq_count, SDC)
         else:
-            Ck = MScandidateGen(Fk, M, CountMap, SDC, MIS)
+            Ck = MScandidateGen(Fk, M, count_map, SDC, MIS)
 
         # print("C", Ck)
         # print("Length of C", len(Ck))
@@ -136,7 +129,7 @@ def ms_gsp(S, MIS, SDC):
         Fk = []
         Fk_withcount = []
         for c in range(len(Ck)):
-            if SupCount[c] / seqCount >= MinMIS(Ck[c], MIS):
+            if SupCount[c] / seq_count >= MinMIS(Ck[c], MIS):
                 Fk.append(Ck[c])
                 Fk_withcount.append([Ck[c], SupCount[c]])
         # print("K", k)
