@@ -51,22 +51,25 @@ def remove_duplicates(d):
 
 
 def init_pass(M, CountMap, seq_count, MIS, LMap):
-    counter = 0
+    ctr = 0
     for i in M:
         support = float(CountMap[i]) / float(seq_count)
         if (support < MIS[i]):
-            counter = counter + 1
+            ctr += 1
         else:
             break
+    # changes made below to list comprehension for a more explicit loop
 
-    checkMIS = MIS[M[counter]]
-    LMap[M[counter]] = CountMap[M[counter]]
+    checkMIS = MIS[M[ctr]]
+    LMap = {M[ctr]: CountMap[M[ctr]]}
 
-    for i in M[counter + 1:]:
-        support = float(CountMap[i]) / float(seq_count)
-        if (support >= checkMIS):
+    # Iterate over M to find frequent items
+    for i in M[ctr + 1:]:
+        support = CountMap[i] / seq_count #float type conversion not needed
+        if support >= checkMIS:
             LMap[i] = CountMap[i]
 
+    # Convert LMap to a list and return
     add_to_L = [[k, v] for k, v in LMap.items()]
     return add_to_L
 
