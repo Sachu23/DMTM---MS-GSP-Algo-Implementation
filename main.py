@@ -50,7 +50,7 @@ def remove_duplicates(d):
     return final
 
 
-def generate_F1(M, CountMap, seq_count, MIS):
+def generate_L(M, CountMap, seq_count, MIS):
     L = list()
     min_support = -1
     for item in M:
@@ -84,7 +84,7 @@ def ms_gsp(S, MIS, SDC):
     M.extend(new_M)
 
     seq_count = len(S)
-    L = generate_F1(M, count_map, seq_count, MIS)
+    L = generate_L(M, count_map, seq_count, MIS)
 
     F1 = list()
     for i in L:
@@ -100,7 +100,7 @@ def ms_gsp(S, MIS, SDC):
         print_s += ">"
         output_file.write(print_s + "\n")
 
-    output_file.write("The count is: " + str(len(F1)) + "\n")
+    output_file.write("\nThe count is: " + str(len(F1)) + "\n")
 
     k = 2
     while (True):
@@ -143,7 +143,7 @@ def ms_gsp(S, MIS, SDC):
             print_s += ">"
             output_file.write(print_s + "\n")
 
-        output_file.write("The count is: " + str(len(Fk)) + "\n")
+        output_file.write("\nThe count is: " + str(len(Fk)) + "\n")
         k += 1
 
 

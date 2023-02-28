@@ -8,14 +8,14 @@ from copy import deepcopy
 
 # below function need L(list of tuple with (item,count)), MIS(dict{(item:MIS)}), n, sdc
 def level_2(L1, MIS, seq_count, sdc, count_map):
-
     C3 = list()
     for i in range(0, len(L1)):
         C3.append([[L1[i]], [L1[i]]])
         C3.append([[L1[i], L1[i]]])
         if (count_map[L1[i]] / seq_count) >= MIS[L1[i]]:
             for j in range(i + 1, len(L1)):
-                if ((count_map[L1[j]] / seq_count) >= MIS[L1[i]]) & (abs(count_map[L1[j]] / seq_count - count_map[L1[i]]/seq_count) <= sdc):
+                if ((count_map[L1[j]] / seq_count) >= MIS[L1[i]]) & (
+                        abs(count_map[L1[j]] / seq_count - count_map[L1[i]] / seq_count) <= sdc):
                     if L1[i] < L1[j]:
                         C3.append([[L1[i], L1[j]]])
                     else:
@@ -33,88 +33,90 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
     C = []
     for i in F:
         s1 = i
-        first_s1 = getFirstItem(s1)
-        last_s1 = getLastItem(s1)
+        first_s1 = i[0][0]
+        last_s1 = i[-1][-1]
         for j in F:
             s2 = j
-            first_s2 = getFirstItem(s2)
-            last_s2 = getLastItem(s2)
+            first_s2 = j[0][0]
+            last_s2 = j[-1][-1]
             MIS_least_seq = getMISofSequence(s1, MIS, first_s1)
             # print(s1)
             # print(s2)
 
             if (MIS[first_s1] < MIS_least_seq):
-                if ((removeItem(s1, 1) == removeItem(s2, Length(s2) - 1)) & (MIS[last_s2] > MIS[first_s1])):
-                    if (Size(LastElement(s2)) == 1):
+                if ((removeItem(s1, 1) == removeItem(s2, get_length(s2) - 1)) & (MIS[last_s2] > MIS[first_s1])):
+                    if (len(s2[-1]) == 1):
                         c1 = []
                         c1 = s1.copy()
-                        c1.append([getLastItem(s2)])
+                        c1.append([s2[-1][-1]])
                         C.append(c1)
 
-                        if ((Length(s1) == 2 & Size(s1) == 2) & (MIS[last_s2] > MIS[last_s1])):
+                        if ((get_length(s1) == 2 & len(s1) == 2) & (MIS[last_s2] > MIS[last_s1])):
                             c2 = []
                             c2 = s1.copy()
-                            last_c2 = LastElement(c2).copy()
-                            last_c2.append(getLastItem(s2))
-                            # c2 = removeItem(c2,Length(c2)-1)
+                            last_c2 = c2[-1].copy()
+                            last_c2.append(s2[-1][-1])
+                            # c2 = removeItem(c2,get_length(c2)-1)
                             del (c2[-1])
                             c2.append(last_c2)
                             C.append(c2)
 
-                    elif (((Length(s1) == 2 & Size(s1) == 1) & (MIS[last_s2] > MIS[last_s1])) | (Length(s1) > 2)):
+                    elif (((get_length(s1) == 2 & len(s1) == 1) & (MIS[last_s2] > MIS[last_s1])) | (
+                            get_length(s1) > 2)):
                         c2 = []
                         c2 = s1.copy()
-                        # last_item_s2 = getLastItem(s2)
-                        last_c2 = LastElement(c2).copy()
-                        last_c2.append(getLastItem(s2))
-                        # c2 = removeItem(c2,Length(c2)-1)
+                        # last_item_s2 = s2[-1][-1]
+                        last_c2 = c2[-1].copy()
+                        last_c2.append(s2[-1][-1])
+                        # c2 = removeItem(c2,get_length(c2)-1)
                         del (c2[-1])
                         c2.append(last_c2)
                         C.append(c2)
 
             elif (MIS[last_s2] < getMISofSequence(s2, MIS, last_s2)):
-                if ((removeItem(s2, 1) == removeItem(s1, Length(s1) - 1)) & (MIS[first_s1] > MIS[last_s2])):
-                    if (Size(FirstElement(s1)) == 1):
+                if ((removeItem(s2, 1) == removeItem(s1, get_length(s1) - 1)) & (MIS[first_s1] > MIS[last_s2])):
+                    if (len(s1[0]) == 1):
                         c1 = []
                         c1 = s2.copy()
-                        c1.append([getFirstItem(s1)])
+                        c1.append([s1[0][0]])
                         C.append(c1)
 
-                        if ((Length(s2) == 2 & Size(s2) == 2) & (MIS[first_s1] > MIS[first_s2])):
+                        if ((get_length(s2) == 2 & len(s2) == 2) & (MIS[first_s1] > MIS[first_s2])):
                             c2 = []
                             c2 = s2.copy()
-                            last_c2 = FirstElement(c2).copy()
-                            last_c2.append(getFirstItem(s1))
+                            last_c2 = c2[0].copy()
+                            last_c2.append(s1[0][0])
                             # c2 = removeItem(c2,0)
                             del (c2[0])
                             c2.append(last_c2)
                             C.append(c2)
-                    elif (((Length(s2) == 2 & Size(s2) == 1) & (MIS[first_s1] > MIS[first_s2])) | (Length(s2) > 2)):
+                    elif (((get_length(s2) == 2 & len(s2) == 1) & (MIS[first_s1] > MIS[first_s2])) | (
+                            get_length(s2) > 2)):
                         c2 = []
                         c2 = s2.copy()
-                        # last_item_s1 = getFirstItem(s1)
-                        last_c2 = FirstElement(c2).copy()
-                        last_c2.append(getFirstItem(s1))
+                        # last_item_s1 = s1[0][0]
+                        last_c2 = c2[0].copy()
+                        last_c2.append(s1[0][0])
                         # c2 = removeItem(c2,0)
                         del (c2[0])
                         c2.append(last_c2)
                         C.append(c2)
 
             else:
-                if (removeItem(s1, 0) == removeItem(s2, Length(s2) - 1)):
-                    if (Size(LastElement(s2)) == 1):
+                if (removeItem(s1, 0) == removeItem(s2, get_length(s2) - 1)):
+                    if len(s2[-1]) == 1:
                         c1 = []
                         c1 = s1.copy()
-                        c1.append([getLastItem(s2)])
+                        c1.append([s2[-1][-1]])
                         C.append(c1)
 
                     else:
                         c1 = []
                         c1 = s1.copy()
-                        # last_item_s2 = getLastItem(s2)
-                        last_c1 = LastElement(c1).copy()
-                        last_c1.append(getLastItem(s2))
-                        # c1 = removeItem(c1,Length(c1)-1)
+                        # last_item_s2 = s2[-1][-1]
+                        last_c1 = c1[-1].copy()
+                        last_c1.append(s2[-1][-1])
+                        # c1 = removeItem(c1,get_length(c1)-1)
                         del (c1[-1])
                         c1.append(last_c1)
                         C.append(c1)
@@ -151,24 +153,9 @@ def PruneC(Can_Seq, F, M):
     return final_Can_Seq
 
 
-def getFirstItem(s):
-    first = 0
-    for i in s:
-        first = i[0]
-        break
-    return first
-
-
-def getLastItem(s):
-    last = 0
-    for i in s:
-        last = i[-1]
-    return last
-
-
 def removeItem(s, index):
     seqnew = copy.deepcopy(s)
-    length = Length(s)
+    length = get_length(s)
     if index < 0 or index >= length:
         return []
     count = 0
@@ -196,23 +183,5 @@ def getMISofSequence(s, MIS, item):
     return min(MIS_array)
 
 
-def Size(s):
-    return len(s)
-
-
-def Length(s):
-    l = 0
-    for i in s:
-        l += len(i)
-    return l
-
-
-def LastElement(s):
-    last = s[-1]
-    return last
-
-
-def FirstElement(s):
-    first = s[0]
-    return first
-
+def get_length(s):
+    return sum(len(i) for i in s)
