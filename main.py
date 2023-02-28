@@ -92,8 +92,8 @@ def ms_gsp(S, MIS, SDC):
         if item_support >= MIS[i]:
             F1.append(i)
 
-    output_file.write("**************************************\n")
     output_file = open("Output_MS-GSP_ORG.txt", "w")
+    output_file.write("**************************************\n")
     output_file.write("1-Sequences:\n")
     for f in F1:
         print_s = "Pattern : <{" + str(f) + "}"
