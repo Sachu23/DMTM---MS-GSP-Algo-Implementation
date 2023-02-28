@@ -24,7 +24,7 @@ def _get_sequence(contents):
 
 def read_seq_file():
     # Reading Sequence file - data.txt
-    with open('data.txt', 'rt') as file:
+    with open('data2.txt', 'rt') as file:
         contents = [x.strip() for x in file.read().split("\n")]
         seq_list = _get_sequence(contents)
 
@@ -49,7 +49,7 @@ def _get_mis_and_sdc(contents):
 
 def read_param_file():
     # Reading requirements file
-    with open('para.txt', 'rt') as file:
+    with open('para2-2.txt', 'rt') as file:
         contents = [x.strip() for x in file.read().split("\n")]
         mis, sdc = _get_mis_and_sdc(contents)
 

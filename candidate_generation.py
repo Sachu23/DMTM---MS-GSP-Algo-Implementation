@@ -26,7 +26,7 @@ def level_2(L1, MIS, seq_count, sdc, count_map):
     return C3
 
 
-def MScandidateGen(F, M, CountMap, SDC, MIS):
+def MScandidateGen(F, MIS):
     # F[2] = [[[20, 30]], [[20], [30]], [[20, 70]], [[20], [70]], [[20], [80]], [[30], [30]], [[30, 70]], [[30], [70]], [[30, 80]], [[30], [80]], [[70], [70]], [[70, 80]], [[80], [70]], [[10, 40]], [[10], [40]], [[40], [40]]]
     # F[2] = [[[20, 30, 40]], [[40], [70]]]
     # print(F)
@@ -39,19 +39,19 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
             s2 = j
             first_s2 = j[0][0]
             last_s2 = j[-1][-1]
-            MIS_least_seq = getMISofSequence(s1, MIS, first_s1)
+            mis_least_seq = getMISofSequence(s1, MIS, first_s1)
             # print(s1)
             # print(s2)
 
-            if (MIS[first_s1] < MIS_least_seq):
-                if ((removeItem(s1, 1) == removeItem(s2, get_length(s2) - 1)) & (MIS[last_s2] > MIS[first_s1])):
-                    if (len(s2[-1]) == 1):
+            if MIS[first_s1] < mis_least_seq:
+                if (removeItem(s1, 1) == removeItem(s2, get_length(s2) - 1)) & (MIS[last_s2] > MIS[first_s1]):
+                    if len(s2[-1]) == 1:
                         c1 = []
                         c1 = s1.copy()
                         c1.append([s2[-1][-1]])
                         C.append(c1)
 
-                        if ((get_length(s1) == 2 & len(s1) == 2) & (MIS[last_s2] > MIS[last_s1])):
+                        if (get_length(s1) == 2 & len(s1) == 2) & (last_s2 > last_s1):
                             c2 = []
                             c2 = s1.copy()
                             last_c2 = c2[-1].copy()
@@ -61,8 +61,8 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
                             c2.append(last_c2)
                             C.append(c2)
 
-                    elif (((get_length(s1) == 2 & len(s1) == 1) & (MIS[last_s2] > MIS[last_s1])) | (
-                            get_length(s1) > 2)):
+                    elif ((get_length(s1) == 2 & len(s1) == 1) & ((last_s2 > last_s1) | (
+                            get_length(s1) > 2))):
                         c2 = []
                         c2 = s1.copy()
                         # last_item_s2 = s2[-1][-1]
@@ -81,7 +81,7 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
                         c1.append([s1[0][0]])
                         C.append(c1)
 
-                        if ((get_length(s2) == 2 & len(s2) == 2) & (MIS[first_s1] > MIS[first_s2])):
+                        if (get_length(s2) == 2 & len(s2) == 2) & (first_s1 > first_s2):
                             c2 = []
                             c2 = s2.copy()
                             last_c2 = c2[0].copy()
@@ -90,7 +90,7 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
                             del (c2[0])
                             c2.append(last_c2)
                             C.append(c2)
-                    elif (((get_length(s2) == 2 & len(s2) == 1) & (MIS[first_s1] > MIS[first_s2])) | (
+                    elif ((get_length(s2) == 2 & len(s2) == 1) & first_s1 > first_s2 | (
                             get_length(s2) > 2)):
                         c2 = []
                         c2 = s2.copy()
@@ -121,19 +121,18 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
                         c1.append(last_c1)
                         C.append(c1)
 
-    prune_c = PruneC(C, F, MIS)
-    return prune_c
+    pruned_c = prune_c(C, F, MIS)
+    return pruned_c
 
 
-def PruneC(Can_Seq, F, M):
-    count = 0;
+def prune_c(Can_Seq, F, M):
+    count = 0
     final_Can_Seq = []
     for Can_Seq_Item in Can_Seq:
         count = 0
         temp_Can_Seq = deepcopy(Can_Seq_Item)
         temp_list = []
         for Can_Seq_Si, Can_Seq_Item_Seq in enumerate(Can_Seq_Item):
-            min_MS_Can_Seq_Item = ''
             min_MS_Can_Seq_Item = Can_Seq_Item_Seq[0]
             for e_item in Can_Seq_Item_Seq:
                 if (M[e_item] < M[min_MS_Can_Seq_Item]):

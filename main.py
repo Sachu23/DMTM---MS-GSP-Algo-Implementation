@@ -92,7 +92,7 @@ def ms_gsp(S, MIS, SDC):
         if item_support >= MIS[i]:
             F1.append(i)
 
-    output_file = open("Output_MS-GSP_ORG.txt", "w")
+    output_file = open("Result-2-2.txt", "w")
     output_file.write("**************************************\n")
     output_file.write("1-Sequences:\n")
     for f in F1:
@@ -107,10 +107,10 @@ def ms_gsp(S, MIS, SDC):
         if k == 2:
             Ck = level_2(L, MIS, seq_count, SDC, count_map)
         else:
-            Ck = MScandidateGen(Fk, M, count_map, SDC, MIS)
+            Ck = MScandidateGen(Fk, MIS)
 
         # print("C", Ck)
-        # print("Length of C", len(Ck))
+        # print("Length of C", len(Ck))2
         SupCount = [0] * len(Ck)
         for c in range(len(Ck)):
             temp_count = 0
