@@ -7,21 +7,23 @@ from copy import deepcopy
 
 
 # below function need L(list of tuple with (item,count)), MIS(dict{(item:MIS)}), n, sdc
-def level_2(L, MIS, n, sdc):
-    C2 = []
-    for i in range(0, len(L)):
-        C2.append([[L[i][0]], [L[i][0]]])
-        C2.append([[L[i][0], L[i][0]]])
-        if (L[i][1] / n) >= MIS[L[i][0]]:
-            for j in range(i + 1, len(L)):
-                if ((L[j][1] / n) >= MIS[L[i][0]]) & (abs(L[j][1] / n - L[i][1] / n) <= sdc):
-                    if L[i][0] < L[j][0]:
-                        C2.append([[L[i][0], L[j][0]]])
+def level_2(L1, MIS, seq_count, sdc, count_map):
+
+    C3 = list()
+    for i in range(0, len(L1)):
+        C3.append([[L1[i]], [L1[i]]])
+        C3.append([[L1[i], L1[i]]])
+        if (count_map[L1[i]] / seq_count) >= MIS[L1[i]]:
+            for j in range(i + 1, len(L1)):
+                if ((count_map[L1[j]] / seq_count) >= MIS[L1[i]]) & (abs(count_map[L1[j]] / seq_count - count_map[L1[i]]/seq_count) <= sdc):
+                    if L1[i] < L1[j]:
+                        C3.append([[L1[i], L1[j]]])
                     else:
-                        C2.append([[L[j][0], L[i][0]]])
-                    C2.append([[L[i][0]], [L[j][0]]])
-                    C2.append([[L[j][0]], [L[i][0]]])
-    return C2
+                        C3.append([[L1[j], L1[i]]])
+                    C3.append([[L1[i]], [L1[j]]])
+                    C3.append([[L1[j]], [L1[i]]])
+
+    return C3
 
 
 def MScandidateGen(F, M, CountMap, SDC, MIS):
@@ -30,11 +32,11 @@ def MScandidateGen(F, M, CountMap, SDC, MIS):
     # print(F)
     C = []
     for i in F:
+        s1 = i
+        first_s1 = getFirstItem(s1)
+        last_s1 = getLastItem(s1)
         for j in F:
-            s1 = i
             s2 = j
-            first_s1 = getFirstItem(s1)
-            last_s1 = getLastItem(s1)
             first_s2 = getFirstItem(s2)
             last_s2 = getLastItem(s2)
             MIS_least_seq = getMISofSequence(s1, MIS, first_s1)

@@ -50,28 +50,20 @@ def remove_duplicates(d):
     return final
 
 
-def init_pass(M, CountMap, seq_count, MIS, LMap):
-    ctr = 0
-    for i in M:
-        support = float(CountMap[i]) / float(seq_count)
-        if (support < MIS[i]):
-            ctr += 1
+def generate_F1(M, CountMap, seq_count, MIS):
+    L = list()
+    min_support = -1
+    for item in M:
+        item_support = float(CountMap[item]) / float(seq_count)
+        if min_support == -1:
+            if item_support >= MIS[item]:
+                L.append(item)
+                min_support = MIS[item]
         else:
-            break
-    # changes made below to list comprehension for a more explicit loop
+            if item_support >= min_support:
+                L.append(item)
 
-    checkMIS = MIS[M[ctr]]
-    LMap = {M[ctr]: CountMap[M[ctr]]}
-
-    # Iterate over M to find frequent items
-    for i in M[ctr + 1:]:
-        support = CountMap[i] / seq_count #float type conversion not needed
-        if support >= checkMIS:
-            LMap[i] = CountMap[i]
-
-    # Convert LMap to a list and return
-    add_to_L = [[k, v] for k, v in LMap.items()]
-    return add_to_L
+    return L
 
 
 def ms_gsp(S, MIS, SDC):
@@ -92,29 +84,28 @@ def ms_gsp(S, MIS, SDC):
     M.extend(new_M)
 
     seq_count = len(S)
-    LMap = dict()
-
-    L = init_pass(M, count_map, seq_count, MIS, LMap)
+    L = generate_F1(M, count_map, seq_count, MIS)
 
     F1 = list()
-    for i in range(len(L)):
-        support = float(L[i][1]) / seq_count
-        if support >= MIS[L[i][0]]:
-            F1.append(L[i][0])
+    for i in L:
+        item_support = float(count_map[i]) / float(seq_count)
+        if item_support >= MIS[i]:
+            F1.append(i)
 
+    output_file.write("**************************************\n")
     output_file = open("Output_MS-GSP_ORG.txt", "w")
-    output_file.write("The number of length 1 sequential pattern is " + str(len(F1)) + "\n")
+    output_file.write("1-Sequences:\n")
     for f in F1:
         print_s = "Pattern : <{" + str(f) + "}"
         print_s += ">"
-        print_s += ": Count = " + str(count_map[f])
         output_file.write(print_s + "\n")
+
+    output_file.write("The count is: " + str(len(F1)) + "\n")
 
     k = 2
     while (True):
-        # print("K", k)
         if k == 2:
-            Ck = level_2(L, MIS, seq_count, SDC)
+            Ck = level_2(L, MIS, seq_count, SDC, count_map)
         else:
             Ck = MScandidateGen(Fk, M, count_map, SDC, MIS)
 
@@ -129,35 +120,30 @@ def ms_gsp(S, MIS, SDC):
             SupCount[c] = temp_count
 
         # print("Count",SupCount)
-        Fk = []
-        Fk_withcount = []
+        Fk = list()
         for c in range(len(Ck)):
             if SupCount[c] / seq_count >= MinMIS(Ck[c], MIS):
                 Fk.append(Ck[c])
-                Fk_withcount.append([Ck[c], SupCount[c]])
-        # print("K", k)
-        # print("Support Count", SupCount)
-        # F.extend(Fk)
-        # print("Fk", Fk)
-        # print("Length of Fk", len(Fk))
-        Fk = remove_duplicates(Fk)
-        Fk_withcount = remove_duplicates(Fk_withcount)
 
-        if (len(Fk) == 0):
+        Fk = remove_duplicates(Fk)
+
+        if len(Fk) == 0:
             break
 
-        output_file.write("The number of length: " + str(k) + " sequential pattern is " + str(len(Fk)) + "\n")
-        for f in Fk_withcount:
+        output_file.write("**************************************\n")
+        output_file.write(str(k) + "-Sequences:" + "\n")
+        for f in Fk:
             print_s = "Pattern : <"
-            for s in f[0]:
+            for s in f:
                 print_s += "{"
                 for i in s:
                     print_s += str(i) + ","
-                # print_s += ","
                 print_s = print_s[:-1]
                 print_s += "}"
-            print_s += ">:Count = " + str(f[1])
+            print_s += ">"
             output_file.write(print_s + "\n")
+
+        output_file.write("The count is: " + str(len(Fk)) + "\n")
         k += 1
 
 
